@@ -51,6 +51,10 @@ function loadSelections()
 
     });
     
+
+    $('#envInfo').text(failedData.date+" ("+failedData.env+")");
+   
+    
 }
 
 function getDescription(testItem)
