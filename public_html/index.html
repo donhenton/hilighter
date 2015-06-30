@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>JSON Highlighter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/lib/json3.js" type="text/javascript"></script>
+        <script src="js/lib/jquery.js" type="text/javascript"></script>
+        <script src="js/lib/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+        <link href="js/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+        <link href="js/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <script src="js/highlighter.js" type="text/javascript"></script>
+        <script src="js/sample_data.js" type="text/javascript"></script>
+        <style>
+            .rowSpacer {margin-top: 20px}
+            .maxbox {width: 100%; height: 350px; overflow-y: scroll}
+
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $('#expected').val(JSON3.stringify(expected, null, 2));
+                $('#actual').val(JSON3.stringify(actual, null, 2));
+            });
+
+
+        </script>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <h3>Javascript Comparison Demo</h3>
+            </div>
+            <div class="row rowSpacer">
+                <button class="btn btn-primary" onclick="doCompare()">Compare</button>
+            </div>
+            <div class="row rowSpacer">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr><th>Expected</th><th>Actual</th><th>Comparison</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td ><textarea class="maxbox" id="expected"></textarea></td>
+                            <td><textarea  class="maxbox" id="actual"></textarea></td>
+                            <td style="width: 33%"><div class="maxbox" id="compare"></div></td>
+
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="row">
+                <h4>Legend </h4>
+
+                <div>
+                    <ul>
+                        <li><span class="wikEdDiffMarkRight" title="Moved block" id="wikEdDiffMark999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');"></span> Original block position</li>
+                        <li><span title="+" class="wikEdDiffInsert">Inserted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
+                        <li><span title="−" class="wikEdDiffDelete">Deleted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
+                        <li><span class="wikEdDiffBlockLeft" title="◀" id="wikEdDiffBlock999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');">Moved<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>block<span class="wikEdDiffNewline"> </span></span></li>
+                        <li><span class="newlineSymbol">¶</span> Newline <span class="spaceSymbol">·</span> Space <span class="tabSymbol">→</span> Tab</li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </body>
+</html>

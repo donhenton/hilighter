@@ -1,0 +1,26 @@
+{
+  "name": "Highlighter",
+  "version": "1.0.0",
+  "description": "A json comparison highlighting system",
+  "keywords": [
+    "highlighting",
+    "json",
+    "testing"
+  ],
+  "authors": [
+    "D Henton"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "json3": "~3.3.2"
+  }
+}
