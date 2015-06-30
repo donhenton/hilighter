@@ -33,6 +33,7 @@ function loadSelections()
     
     var listObj = $('#testList');
     var firstChoice = false;
+     
     failedData["comparisons"].forEach(function (d, i)
     {
         var t = "";
