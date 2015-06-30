@@ -21,6 +21,7 @@
   "dependencies": {
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
-    "json3": "~3.3.2"
+    "json3": "~3.3.2",
+    "zeroclipboard": "~2.2.0"
   }
 }
