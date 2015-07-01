@@ -1,5 +1,4 @@
-//will be loaded by jquery on pageLoad
-var failedData = null;
+
 
 
 function doCompare()
