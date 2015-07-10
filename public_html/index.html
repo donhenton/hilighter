@@ -9,13 +9,13 @@ and open the template in the editor.
         <title>JSON Comparison Viewer</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="js/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+        <link href="js/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <script src="json/failed_comparisons.js" type="text/javascript"></script>
-        <script src="js/lib/zeroclipboard/ZeroClipboard.js" type="text/javascript"></script>
         <script src="js/lib/json3.js" type="text/javascript"></script>
         <script src="js/lib/jquery.js" type="text/javascript"></script>
         <script src="js/lib/bootstrap/js/bootstrap.js" type="text/javascript"></script>
-        <link href="js/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
-        <link href="js/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
         <script src="js/wikEd_highlighter.js" type="text/javascript"></script>
         <script src="js/comparison_code.js" type="text/javascript"></script>
         <style>
@@ -26,40 +26,16 @@ and open the template in the editor.
         </style>
         <script>
             $(document).ready(function () {
-               
+
                 if (failedData !== null)
                 {
                     // console.log(JSON3.stringify(failedData,null,2))
                     loadSelections();
 
 
-                    //set up clipboardcopy
-
-                    var client = new ZeroClipboard(document.getElementById("copy-button"));
-
-                    client.on("ready", function (readyEvent) {
-                        // alert( "ZeroClipboard SWF is ready!" );
-
-
-                        client.on("copy", function (event) {
-                            var clipboard = event.clipboardData;
-                            var selectIdx = $('#testList').val();
-
-                            var actualStr =
-                                    JSON3.stringify(failedData["comparisons"][selectIdx].actual);
-
-                            clipboard.setData("text/plain", actualStr);
 
 
 
-                        });
-                        client.on("aftercopy", function (event) {
-                            // `this` === `client`
-                            // `event.target` === the element that was clicked
-                            // event.target.style.display = "none";
-                            //alert("Copied text to clipboard: " + event.data["text/plain"]);
-                        });
-                    });
                 }
                 else
                 {
@@ -78,64 +54,115 @@ and open the template in the editor.
     </head>
     <body>
         <div class="container">
-            <div class="row">
-                <h3 class="col-lg-6 "> 
-                 JSON Comparison Viewer <span style="display:none" id="nothingFound">(Nothing found)</span> 
-                </h3>
-                 <h3 class="pull-right" id="envInfo">
-                </h3>
+            <ul id="navTabs" class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#Comparison">Comparison Viewer</a></li>
+                <li><a data-toggle="tab" href="#Formatter">Formatter Tools</a></li>
+            </ul>
+            <div class="tab-content">
+
+
+                <div id="Comparison" class="tab-pane fade in active">
+
+
+                    <div class="row">
+                        <h3 class="col-lg-6 "> 
+                            JSON Comparison Viewer <span style="display:none" id="nothingFound">(Nothing found)</span> 
+                        </h3>
+                        <h3 class="pull-right" id="envInfo">
+                        </h3>
+                    </div>
+                    <div id="mainBody">
+                        <div class="form-inline">
+
+                            <div class="form-group">
+
+                                <label for="testList">Test:</label>
+                                <select class="form-control input-lg" id="testList"></select>
+
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="doCompare()">Compare</button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row rowSpacer">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr><th>Expected</th><th>Actual <button id="copy-button" style="visibility:hidden; font-size: 75%"  onClick="copyToFormatter()" class="btn btn-sm btn-primary pull-right">Copy Unformatted to Formatter Tools</button>  </th><th>Comparison</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td ><textarea readonly  class="maxbox" id="expected"></textarea></td>
+                                        <td><textarea  readonly  class="maxbox" id="actual"></textarea></td>
+                                        <td style="width: 33%"><div class="maxbox" id="compare"></div></td>
+
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div id="legend" style="display:none" class="row">
+                            <h4>Legend </h4>
+
+                            <div>
+                                <ul>
+                                    <li><span class="wikEdDiffMarkRight" title="Moved block" id="wikEdDiffMark999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');"></span> Original block position</li>
+                                    <li><span title="+" class="wikEdDiffInsert">Inserted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
+                                    <li><span title="−" class="wikEdDiffDelete">Deleted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
+                                    <li><span class="wikEdDiffBlockLeft" title="◀" id="wikEdDiffBlock999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');">Moved<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>block<span class="wikEdDiffNewline"> </span></span></li>
+                                    <li><span class="newlineSymbol">¶</span> Newline <span class="spaceSymbol">·</span> Space <span class="tabSymbol">→</span> Tab</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div id="Formatter" class="tab-pane fade in">
+                    <h3 class="col-lg-6 "> 
+                        Formatter Tools</h3>
+                    <div class="row rowSpacer">
+
+                        <textarea  class="maxbox" id="formatArea"></textarea>
+
+
+                    </div>
+
+                    <div class="row rowSpacer">
+
+                        <div class="form-inline">
+
+                            <div class="form-group">
+
+                                <em>Copy and paste the JSON above for use in the gold file</em> 
+
+                            </div>
+                            <div class="form-group">
+                                <button  class="btn btn-primary" id="prettyPrintButton" onclick="prettyPrintFormatter()" >Pretty Print Contents</button>
+
+                            </div>
+                            <div class="form-group">
+                                <button  class="btn btn-primary" id="unformatButton" onclick="unFormatFormatter()" >Unformat Contents</button>
+
+                            </div>
+                            <div class="form-group">
+                                <span id="parseWarning" class="badge badge-danger"></span>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
             </div>
-            <div id="mainBody">
-                <div class="form-inline">
-
-                    <div class="form-group">
-
-                        <label for="testList">Test:</label>
-                        <select class="form-control input-lg" id="testList"></select>
-
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary" onclick="doCompare()">Compare</button>
-
-                    </div>
-
-                </div>
-
-                <div class="row rowSpacer">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr><th>Expected</th><th>Actual <a id="copy-button" style="visibility:hidden; font-size: 75%" href="#" class="pull-right"  data-clipboard-text="Copy Me!" title="Click to copy me.">Copy Unformatted to Clipboard</a>  </th><th>Comparison</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td ><textarea readonly  class="maxbox" id="expected"></textarea></td>
-                                <td><textarea  readonly  class="maxbox" id="actual"></textarea></td>
-                                <td style="width: 33%"><div class="maxbox" id="compare"></div></td>
-
-                            </tr>
-
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-                <div id="legend" style="display:none" class="row">
-                    <h4>Legend </h4>
-
-                    <div>
-                        <ul>
-                            <li><span class="wikEdDiffMarkRight" title="Moved block" id="wikEdDiffMark999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');"></span> Original block position</li>
-                            <li><span title="+" class="wikEdDiffInsert">Inserted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
-                            <li><span title="−" class="wikEdDiffDelete">Deleted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></li>
-                            <li><span class="wikEdDiffBlockLeft" title="◀" id="wikEdDiffBlock999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');">Moved<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>block<span class="wikEdDiffNewline"> </span></span></li>
-                            <li><span class="newlineSymbol">¶</span> Newline <span class="spaceSymbol">·</span> Space <span class="tabSymbol">→</span> Tab</li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-
 
         </div>
     </body>
