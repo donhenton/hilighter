@@ -1,13 +1,15 @@
 /* global failedData, JSON3 */
 
 ///////////////////////////////////////////////////////////////
-var dateInformation = 
-{
-   "JSONComparisonToolTests-->testOne": "6/5/2015 11:34",
-   "JSONComparisonToolTests-->testTwo": "6/5/2015 11:34",
-   "JSONComparisonToolTests-->testThree": "6/5/2015 11:34",
-   "RestaurantTests-->testFour": "6/5/2015 11:34"
-}
+var dateInformation =
+        {
+            "dev": {
+                "JSONComparisonToolTests-->testOne": "6/5/2015 11:34",
+                "JSONComparisonToolTests-->testTwo": "6/5/2015 11:34",
+                "JSONComparisonToolTests-->testThree": "6/5/2015 11:34",
+                "RestaurantTests-->testFour": "6/5/2015 11:34"
+            }
+        }
 
 //update this variable with dates when gold files are created
 //you can generate a formatted sample in the formatter tools tab of 
@@ -66,7 +68,7 @@ function reportParseProblem(show)
     }
     else
     {
-         $("#parseWarning").text("");
+        $("#parseWarning").text("");
     }
 }
 
@@ -97,19 +99,19 @@ function composeDateSample()
 {
     var sample = {};
     var date = new Date();
-    var strDate = date.getMonth()+1+"/"+date.getDate()+"/"+date.getFullYear() +" ";
-    strDate = strDate + date.getHours()+":"+date.getMinutes();
+    var strDate = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + " ";
+    strDate = strDate + date.getHours() + ":" + date.getMinutes();
     failedData["comparisons"].forEach(function (d, i)
     {
-        
+
         sample[getDescription(d)] = strDate;
     });
-    var text = "var dateInformation = \n" +JSON3.stringify(sample,null,3);
-    text = text +"\n\nPaste this into comparision_code.js to place date\n"+
-    "information about when gold files where generated";
-    
+    var text = "var dateInformation = \n" + JSON3.stringify(sample, null, 3);
+    text = text + "\n\nPaste this into comparison_code.js to place date\n" +
+            "information about when gold files where generated";
+
     $('#formatArea').val(text);
-    
+
 }
 
 /////////////////////////////////////////////////////////////
@@ -138,13 +140,15 @@ function doCompare()
         $('#copy-button').css("visibility", "visible");
     }
     //handle the date information
-    var dateText = dateInformation[getDescription(testItem)];
-    if (typeof dateText =='undefined'){
+    var dateInformationForEnv = dateInformation[failedData.env];
+    var dateText = dateInformationForEnv[getDescription(testItem)];
+    
+    if (typeof dateText == 'undefined') {
         dateText = "";
     }
     else
     {
-        dateText = "<br/>("+dateText+")";
+        dateText = "<br/>(" + dateText + ")";
     }
     $('#dateText').html(dateText);
 }
