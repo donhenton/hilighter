@@ -90,7 +90,7 @@ and open the template in the editor.
                         <div class="row rowSpacer">
                             <table class="table table-bordered">
                                 <thead>
-                                    <tr><th>Expected</th><th>Actual <button id="copy-button" style="visibility:hidden; font-size: 75%"  onClick="copyToFormatter()" class="btn btn-sm btn-primary pull-right">Copy Unformatted to Formatter Tools</button>  </th><th>Comparison</th></tr>
+                                    <tr><th>Expected <span id="dateText"></span></th><th>Actual <button id="copy-button" style="visibility:hidden; font-size: 75%"  onClick="copyToFormatter()" class="btn btn-sm btn-primary pull-right">Copy Unformatted to Formatter Tools</button>  </th><th>Comparison</th></tr>
                                 </thead>
                                 <tbody>
                                     <tr>
@@ -159,7 +159,10 @@ and open the template in the editor.
                         </div>
 
                     </div>
-
+                    <div class="row rowSpacer">
+                         <button  class="btn btn-primary" id="composeDateButton" onclick="composeDateSample()" >Compose Date Sample</button>
+                        
+                    </div>
 
                 </div>
             </div>

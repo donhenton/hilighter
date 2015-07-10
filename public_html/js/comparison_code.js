@@ -1,3 +1,20 @@
+///////////////////////////////////////////////////////////////
+var dateInformation = 
+{
+   "JSONComparisonToolTests-->testOne": "6/5/2015 11:34",
+   "JSONComparisonToolTests-->testTwo": "6/5/2015 11:34",
+   "JSONComparisonToolTests-->testThree": "6/5/2015 11:34",
+   "RestaurantTests-->testFour": "6/5/2015 11:34"
+}
+
+//update this variable with dates when gold files are created
+//you can generate a formatted sample in the formatter tools tab of 
+//index.html, which will give the sample for failed tests
+//this variable should contain an entry for each maintained
+//gold file
+
+
+
 ///////////////// formatter functions ////////////////////////
 function copyToFormatter()
 {
@@ -74,6 +91,25 @@ function getToolTextASJSON()
     return jsonInfo;
 }
 
+function composeDateSample()
+{
+    var sample = {};
+    var date = new Date();
+    var strDate = date.getMonth()+"/"+date.getDay()+"/"+date.getFullYear() +" ";
+    strDate = strDate + date.getHours()+":"+date.getMinutes();
+    failedData["comparisons"].forEach(function (d, i)
+    {
+        
+        sample[getDescription(d)] = strDate;
+    });
+    var text = "var dateInformation = \n" +JSON3.stringify(sample,null,3);
+    text = text +"\n\nPaste this into comparision_code.js to place date\n"+
+    "information about when gold files where generated";
+    
+    $('#formatArea').val(text);
+    
+}
+
 /////////////////////////////////////////////////////////////
 
 
@@ -81,10 +117,11 @@ function doCompare()
 
 {
     var selectIdx = $('#testList').val();
+    var testItem = failedData["comparisons"][selectIdx];
     var expectedStr =
-            JSON3.stringify(failedData["comparisons"][selectIdx].expected, null, 2);
+            JSON3.stringify(testItem.expected, null, 2);
     var actualStr =
-            JSON3.stringify(failedData["comparisons"][selectIdx].actual, null, 2);
+            JSON3.stringify(testItem.actual, null, 2);
     var wikEdDiff = new WikEdDiff();
 //    wikEdDiffConfig.fullDiff = true;
 //    wikEdDiffConfig.showBlockMoves = false;
@@ -98,7 +135,16 @@ function doCompare()
         $('#legend').show();
         $('#copy-button').css("visibility", "visible");
     }
-
+    //handle the date information
+    var dateText = dateInformation[getDescription(testItem)];
+    if (typeof dateText =='undefined'){
+        dateText = "";
+    }
+    else
+    {
+        dateText = "<br/>("+dateText+")";
+    }
+    $('#dateText').html(dateText);
 }
 
 
@@ -129,3 +175,8 @@ function getDescription(testItem)
 {
     return testItem.testName + "-->" + testItem.methodName;
 }
+
+
+
+
+
