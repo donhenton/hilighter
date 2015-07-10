@@ -1,3 +1,5 @@
+/* global failedData, JSON3 */
+
 ///////////////////////////////////////////////////////////////
 var dateInformation = 
 {
@@ -95,7 +97,7 @@ function composeDateSample()
 {
     var sample = {};
     var date = new Date();
-    var strDate = date.getMonth()+"/"+date.getDay()+"/"+date.getFullYear() +" ";
+    var strDate = date.getMonth()+1+"/"+date.getDate()+"/"+date.getFullYear() +" ";
     strDate = strDate + date.getHours()+":"+date.getMinutes();
     failedData["comparisons"].forEach(function (d, i)
     {
