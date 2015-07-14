@@ -1,0 +1,11 @@
+ 
+{
+    
+    "date": "07/14/2015 08:13:19",
+    "testData": [ {
+    "testDescription" : "Test",
+    "goldFile" : "target/classes/gold_files/alpha.png",
+    "newImageFile" : "target/classes/public_html/test_viewer/newimages/alphanew.png",
+    "compareFile" : "target/classes/public_html/test_viewer/comp/alpha.png"
+  } ]
+}
