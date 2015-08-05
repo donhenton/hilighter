@@ -30,7 +30,7 @@ and open the template in the editor.
                 if (failedData !== null)
                 {
                     // console.log(JSON3.stringify(failedData,null,2))
-                    loadSelections();
+                    setUpSingleCompare();
 
 
 
@@ -65,30 +65,17 @@ and open the template in the editor.
 
 
                     <div class="row">
-                        <h3 class="col-lg-6 "> 
-                            JSON Comparison Viewer <span style="display:none" id="nothingFound">(Nothing found)</span> 
-                        </h3>
-                        <h3 class="pull-right" id="envInfo">
-                        </h3>
+                        <h4 class="col-lg-10 "> 
+                            
+                            <span id="testName"></span>--><span id="methodName"></span> 
+                            
+                            <span style="display:none" id="nothingFound">(Nothing found)</span> 
+                        
+                     
+                            <span class="" id="envInfo"></span></h4>
                     </div>
                     <div id="mainBody">
-                        <div class="form-inline">
-
-                            <div class="form-group">
-
-                                <label for="testList">Test:</label>
-                                <select class="form-control input-lg" id="testList"></select>
-
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-primary" onclick="doCompare()">Compare</button>
-
-                            </div>
-                            <div class="form-group">
-                                <a href="singleCompare.html?testName=JSONComparisonToolTests&methodName=testOne" class="btn btn-primary">Go to Single Display</a>
-                            </div>
-
-                        </div>
+                         
 
                         <div class="row rowSpacer">
                             <table class="table table-bordered">
@@ -163,8 +150,8 @@ and open the template in the editor.
 
                     </div>
                     <div class="row rowSpacer">
-                        <button  class="btn btn-primary" id="composeDateButton" onclick="composeDateSample()" >Compose Date Sample</button>
-
+                         <button  class="btn btn-primary" id="composeDateButton" onclick="composeDateSample()" >Compose Date Sample</button>
+                        
                     </div>
 
                 </div>

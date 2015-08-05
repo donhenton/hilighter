@@ -22,7 +22,19 @@ var dateInformation =
 ///////////////// formatter functions ////////////////////////
 function copyToFormatter()
 {
-    var selectIdx = $('#testList').val();
+    var selectIdx = -1;
+    if ($('#testList').length)
+    {
+        //not on single
+        selectIdx = $('#testList').val();
+    }
+    else
+    {
+        //on single page
+         
+        selectIdx = window.frameCompareIndex;
+        
+    }
     var actualStr =
             JSON3.stringify(failedData["comparisons"][selectIdx].actual);
     $('#formatArea').val(actualStr);
@@ -107,7 +119,7 @@ function composeDateSample()
         sample[getDescription(d)] = strDate;
     });
     var text = "var dateInformation = \n" + JSON3.stringify(sample, null, 3);
-    text = text + "\n\nPaste this into comparison_code.js to place date\n" +
+    text = text + "\n\nPaste this into comparision_code.js to place date\n" +
             "information about when gold files where generated";
 
     $('#formatArea').val(text);
@@ -121,7 +133,13 @@ function doCompare()
 
 {
     var selectIdx = $('#testList').val();
-    var testItem = failedData["comparisons"][selectIdx];
+    compareIndexItem(selectIdx);
+
+}
+
+function compareIndexItem(v)
+{
+    var testItem = failedData["comparisons"][v];
     var expectedStr =
             JSON3.stringify(testItem.expected, null, 2);
     var actualStr =
@@ -140,10 +158,19 @@ function doCompare()
         $('#copy-button').css("visibility", "visible");
     }
     //handle the date information
+
     var dateInformationForEnv = dateInformation[failedData.env];
-    var dateText = dateInformationForEnv[getDescription(testItem)];
-    
-    if (typeof dateText == 'undefined') {
+    var dateText = null;
+
+    if (typeof dateInformationForEnv !== 'undefined')
+    {
+
+        dateText = dateInformationForEnv[getDescription(testItem)];
+
+
+    }
+
+    if (dateText === null) {
         dateText = "";
     }
     else
@@ -152,6 +179,8 @@ function doCompare()
     }
     $('#dateText').html(dateText);
 }
+
+
 
 
 function loadSelections()
@@ -184,5 +213,51 @@ function getDescription(testItem)
 
 
 
+/////////// singleCompareCode ////////////////////////////
+
+/**
+ * 
+ * read a query string variable. used on the single page
+ * viewer page
+ * 
+ * @param {type} variable
+ * @returns {Boolean|getQueryVariable.pair}
+ */
+function getQueryVariable(variable)
+{
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return(false);
+}
+
+function setUpSingleCompare()
+{
+    var testName = getQueryVariable("testName");
+    var methodName = getQueryVariable("methodName");
+    $("#testName").text(testName);
+    $("#methodName").text(methodName);
+    $('#envInfo').text(failedData.date + " (" + failedData.env + ")");
+    failedData["comparisons"].forEach(function (d, i)
+    {
+        if (d.testName === testName && d.methodName === methodName)
+        {
+            compareIndexItem(i);
+            window.frameCompareIndex = i;
+        }
+
+    });
 
 
+
+
+
+}
+
+
+ 
