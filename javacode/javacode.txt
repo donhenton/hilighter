@@ -30,14 +30,16 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.fail;
+import org.testng.Reporter;
+import static com.ni.rest.comparison.tools.JSONComparisonViewerLink.JSON_COMPARISON_FOLDER;
 
 /**
- * This class will write out to a JSON file, that is used to analyze
- * failed tests. The specific tests are those which use gold files to 
- * compare results. The JSON records the expected and actual JSON and
- * writes to both a JSON and javascript file. The javascript file can 
- * then be loaded into an html page for viewing via a javascript program.
- * 
+ * This class will write out to a JSON file, that is used to analyze failed
+ * tests. The specific tests are those which use gold files to compare results.
+ * The JSON records the expected and actual JSON and writes to both a JSON and
+ * javascript file. The javascript file can then be loaded into an html page for
+ * viewing via a javascript program.
+ *
  * @author dhenton
  */
 public class JSONComparisonTool {
@@ -89,35 +91,42 @@ public class JSONComparisonTool {
         return null;
     }
 
+   
+    public int
+            compareJson(String testName, String methodName,
+                    String expectedString, String actualString, int threshold)
+            throws IOException, Exception {
+
+        return compareJson(testName, methodName, expectedString, actualString, threshold, true);
+    }
+
     /**
-     * pretty print two json strings and compare them. Write out to a json file
+     * pretty print two json strings and compare them.Write out to a json file
      * for comparison in a diff tool should the comparison exceed or equal the
      * threshold value for the Levenshtein Distance
-     *
      * @param testName the test name generally the test class toString
      * @param methodName the specific method of the test
      * @param expectedString expected results
      * @param actualString actual results
      * @param threshold if the Levenshtein Distance distance is greater or
      * equal, then fail the test
+     * @param failOnExceed if true then fail here for testing
      * @throws java.io.IOException problems with pretty print
-     *
+     * @return the int
      */
-    public void
-            compareJson(String testName, String methodName,
-                    String expectedString, String actualString, int threshold)
+    public int compareJson(String testName, String methodName, 
+            String expectedString, String actualString, 
+            int threshold, boolean failOnExceed) 
             throws IOException, Exception {
-
-        expectedString = prettyPrint(expectedString);
+        
+        int distanceValue = -9;
+        expectedString = prettyPrint(expectedString);  
         actualString = prettyPrint(actualString);
-
-        int dist = StringUtils.getLevenshteinDistance(expectedString, actualString);
-        LOG.debug(
-                String.format("beginning write of "
-                        + "comparison json dist %d "
-                        + "threshold %d", dist, threshold));
-
-        if (dist >= threshold) {
+        distanceValue = StringUtils.getLevenshteinDistance(expectedString, actualString);
+        LOG.debug(String.format("beginning write of "
+                + "comparison json dist %d "
+                + "threshold %d", distanceValue, threshold));
+        if (distanceValue >= threshold) {
             //write out to the json  and js file
             LOG.debug("got greater than threshold");
             String templateName = "/velocity_templates/comparisons/singleTest.vm";
@@ -126,11 +135,9 @@ public class JSONComparisonTool {
             context.put("actual", actualString);
             context.put("testName", testName);
             context.put("methodName", methodName);
-
             try {
                 VelocityEngine ve = (new VelocityEngineFactory()).getEngine();
                 StringWriter writer = new StringWriter();
-
                 ve.mergeTemplate(templateName, "UTF-8", context, writer);
                 writer.flush();
                 writer.close();
@@ -139,16 +146,21 @@ public class JSONComparisonTool {
                 writeToAccumulationFile(mergeResults);
                 String info = "json comparison failed for " + testName + "-->" + methodName;
                 LOG.warn(info);
-                fail(info);
-
-            } catch (Exception err) {
+                String paramTemplate =  "<a href='" +
+                        JSON_COMPARISON_FOLDER  + 
+                        "singleCompare.html?testName=%s&methodName=%s'>" +
+                        "JSON Comparison</a>";
+                String linkReport = String.format(paramTemplate, testName, methodName);
+                Reporter.log(linkReport);
+                if (failOnExceed)
+                    fail(info);
+            }catch (Exception err) {
                 String error = "Unable to perform velocity compare write\n";
                 LOG.error(error, err);
                 fail(error);
             }
-
         }
-
+        return distanceValue;
     }
 
     private void writeJSFile(String data) throws IOException {
@@ -188,7 +200,7 @@ public class JSONComparisonTool {
         jsonData
                 = m.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(json);
-        LOG.info("writing comparison");
+        LOG.info("writing comparison " + jsonFile2.getAbsolutePath());
         FileUtils.writeStringToFile(jsonFile2, jsonData);
 
         writeJSFile(jsonData);
