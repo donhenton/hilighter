@@ -31,9 +31,9 @@ function copyToFormatter()
     else
     {
         //on single page
-         
+
         selectIdx = window.frameCompareIndex;
-        
+
     }
     var actualStr =
             JSON3.stringify(failedData["comparisons"][selectIdx].actual);
@@ -259,5 +259,45 @@ function setUpSingleCompare()
 
 }
 
+ var exObj = null;
+ var actObj = null;
+function doAdhocComparison()
+{
 
+    var expectedStr = $('#expected').val();
+    var actualStr = $('#actual').val();
+    
+    var message = "";
+    
+    try
+    {
+        exObj = JSON.parse(expectedStr);
+        expectedStr = JSON3.stringify(exObj, null, 2);
+
+    }
+    catch (e) {
+        message = message + "EXPECTED\n"+e.message+" ";
+         
+    }
+    try
+    {
+        actObj = JSON.parse(actualStr);
+        actualStr = JSON3.stringify(actObj, null, 2);
+
+    }
+    catch (e) {
+        message = message + "Actual\n"+e.message+" ";
+         
+    }
+    $('#message').text(message);
+    var wikEdDiff = new WikEdDiff();
+
+   // $('#expected').val(expectedStr);
+   // $('#actual').val(actualStr);
+    var diffHtml = wikEdDiff.diff(expectedStr, actualStr);
+    $('#compare').empty();
+    $('#compare').html(diffHtml);
+    
+     
+}
  
